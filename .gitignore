@@ -1,0 +1,8 @@
+.vs
+bin/
+obj/
+z
+z.*
+*.user
+Directory.Build.props
+DataFrame.psd1

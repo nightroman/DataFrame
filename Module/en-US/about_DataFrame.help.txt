@@ -1,0 +1,32 @@
+TOPIC
+    about_DataFrame
+
+SHORT DESCRIPTION
+    Cmdlets for Microsoft.Data.Analysis.DataFrame
+
+LONG DESCRIPTION
+    The module provides the following commands:
+
+        Import-DataFrame
+        Export-DataFrame
+
+        New-DataFrame
+        Out-DataFrame
+        Add-DataRow
+
+        New-BooleanColumn
+        New-ByteColumn
+        New-CharColumn
+        New-DateTimeColumn
+        New-DecimalColumn
+        New-DoubleColumn
+        New-Int16Column
+        New-Int32Column
+        New-Int64Column
+        New-SingleColumn
+        New-StringColumn
+
+SEE ALSO
+    https://github.com/nightroman/DataFrame
+    https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe
+    https://learn.microsoft.com/en-us/dotnet/machine-learning/how-to-guides/getting-started-dataframe
