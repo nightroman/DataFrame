@@ -4,16 +4,16 @@
 
 .Description
 	This way is much faster than using Add-DataRow, see x-many-rows-2.ps1.
-	When the length unknown then Append() to columns, this also works fast.
+	With unknown Length use columns Append(), it works fast as well.
 
-	Time                 Index Name                                                                                                                                    █
-	----                 ----- ----                                                                                                                                    █
-	2023-12-02 18:19:07      0 Name0                                                                                                                                   █
-	2023-12-02 18:19:07 100000 Name100000                                                                                                                              █
-	2023-12-02 18:19:07 200000 Name200000                                                                                                                              █
-	2023-12-02 18:19:07 300000 Name300000                                                                                                                              █
-	2023-12-02 18:19:07 400000 Name400000                                                                                                                              █
-	2023-12-02 18:19:07 500000 Name500000                                                                                                                              █
+	Time                 Index Name
+	----                 ----- ----
+	2023-12-02 18:19:07      0 Name0
+	2023-12-02 18:19:07 100000 Name100000
+	2023-12-02 18:19:07 200000 Name200000
+	2023-12-02 18:19:07 300000 Name300000
+	2023-12-02 18:19:07 400000 Name400000
+	2023-12-02 18:19:07 500000 Name500000
 #>
 
 Import-Module DataFrame

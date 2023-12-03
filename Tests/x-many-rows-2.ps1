@@ -3,8 +3,8 @@
 	Adds many rows by Add-DataRow and shows times.
 
 .Description
-	Add-DataRow is much slower than using indexes or appending to columns.
-	But it is still suitable for simple or iteractive scenarios.
+	Appending to DataFrame is slower than using indexes or appending to columns.
+	But this way is simpler and suitable for temporary or interactive scenarios.
 
 	Time                 Index Name       Check
 	----                 ----- ----       -----

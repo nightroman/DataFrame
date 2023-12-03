@@ -8,7 +8,7 @@ task add_all_some_none_via_parameter {
 		New-Int32Column
 	)
 
-	Add-DataRow $df ('Joe', 42)
+	Add-DataRow $df 'Joe', 42
 	Add-DataRow $df 'May'
 	Add-DataRow $df
 
