@@ -114,7 +114,7 @@ This command creates a new DataFrame from the specified columns.
 				)
 
 				# append data rows
-				Add-DataRow $df Joe, 42
+				Add-DataFrameRow $df Joe, 42
 			}
 			test = {. $args[0]}
 		}
@@ -149,13 +149,13 @@ If they do not match, transform input objects by Select-Object.
 		test = {. $args[0]}
 	}
 	links = @(
-		@{text = 'Add-DataRow'}
+		@{text = 'Add-DataFrameRow'}
 	)
 }
 
-### Add-DataRow
+### Add-DataFrameRow
 @{
-	command = 'Add-DataRow'
+	command = 'Add-DataFrameRow'
 	synopsis = 'Adds one row to DataFrame.'
 	description = @'
 This command adds one row of values to the DataFrame.
@@ -178,7 +178,7 @@ In this case nulls replace missing values.
 			)
 
 			# append rows from input objects
-			Get-ChildItem -File | % { Add-DataRow $df $_.Name, $_.Length }
+			Get-ChildItem -File | % { Add-DataFrameRow $df $_.Name, $_.Length }
 		}
 		test = {. $args[0]}
 	}

@@ -13,7 +13,7 @@ task process -If (!(Test-Path z.process.csv)) {
 	)
 
 	foreach($_ in Get-Process) {
-		Add-DataRow $df @(
+		Add-DataFrameRow $df @(
 			$_.Name
 			$_.WS
 			$_.Handles

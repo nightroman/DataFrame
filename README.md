@@ -35,7 +35,7 @@ Create and populate `DataFrame`:
 
 - `New-DataFrame`
 - `Out-DataFrame`
-- `Add-DataRow`
+- `Add-DataFrameRow`
 
 Create `DataFrame` columns:
 

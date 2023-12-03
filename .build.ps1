@@ -40,7 +40,7 @@ task meta -Inputs (
 	VariablesToExport = @()
 	FunctionsToExport = @()
 	CmdletsToExport = @(
-		'Add-DataRow'
+		'Add-DataFrameRow'
 		'Export-DataFrame'
 		'Import-DataFrame'
 		'New-BooleanColumn'

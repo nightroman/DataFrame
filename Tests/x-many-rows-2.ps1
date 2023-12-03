@@ -1,6 +1,6 @@
 ﻿<#
 .Synopsis
-	Adds many rows by Add-DataRow and shows times.
+	Adds many rows by Add-DataFrameRow and shows times.
 
 .Description
 	Appending to DataFrame is slower than using indexes or appending to columns.
@@ -33,7 +33,7 @@ $df = New-DataFrame @(
 
 # add many rows
 for($i = 0; $i -lt $n2; ++$i) {
-	Add-DataRow $df ([DateTime]::Now), $i, "Name$i", ($i % $n1 -eq 0)
+	Add-DataFrameRow $df ([DateTime]::Now), $i, "Name$i", ($i % $n1 -eq 0)
 }
 
 # show checkpoint rows

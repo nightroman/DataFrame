@@ -4,8 +4,8 @@ using System.Management.Automation;
 
 namespace PSDataFrame.Commands;
 
-[Cmdlet(VerbsCommon.Add, "DataRow")]
-public class AddDataRowCommand : PSCmdlet
+[Cmdlet(VerbsCommon.Add, "DataFrameRow")]
+public class AddDataFrameRowCommand : PSCmdlet
 {
     int _count;
     object[] _values;

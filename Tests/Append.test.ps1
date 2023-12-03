@@ -8,9 +8,9 @@ task add_all_some_none_via_parameter {
 		New-Int32Column
 	)
 
-	Add-DataRow $df 'Joe', 42
-	Add-DataRow $df 'May'
-	Add-DataRow $df
+	Add-DataFrameRow $df 'Joe', 42
+	Add-DataFrameRow $df 'May'
+	Add-DataFrameRow $df
 
 	equals 3L $df.Rows.Count
 	equals $df[0, 0] Joe
@@ -27,9 +27,9 @@ task add_all_some_none_via_pipeline {
 		New-Int32Column
 	)
 
-	'Joe', 42 | Add-DataRow $df
-	'May' | Add-DataRow $df
-	@() | Add-DataRow $df
+	'Joe', 42 | Add-DataFrameRow $df
+	'May' | Add-DataFrameRow $df
+	@() | Add-DataFrameRow $df
 
 	equals 3L $df.Rows.Count
 	equals $df[0, 0] Joe

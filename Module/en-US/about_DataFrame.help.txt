@@ -12,7 +12,7 @@ LONG DESCRIPTION
 
         New-DataFrame
         Out-DataFrame
-        Add-DataRow
+        Add-DataFrameRow
 
         New-BooleanColumn
         New-ByteColumn

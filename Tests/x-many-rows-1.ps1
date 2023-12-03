@@ -3,7 +3,7 @@
 	Sets many rows using inexes and shows times.
 
 .Description
-	This way is much faster than using Add-DataRow, see x-many-rows-2.ps1.
+	This way is much faster than adding rows to DataFrame, see x-many-rows-2.ps1.
 	With unknown Length use columns Append(), it works fast as well.
 
 	Time                 Index Name
