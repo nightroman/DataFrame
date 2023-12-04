@@ -6,7 +6,7 @@ namespace PSDataFrame.Commands;
 
 [Cmdlet(VerbsCommon.New, "BooleanColumn")]
 [OutputType(typeof(BooleanDataFrameColumn))]
-public class NewBoolanColumnCommand : BaseNewPrimitiveColumnCommand<bool>
+public class NewBooleanColumnCommand : BaseNewPrimitiveColumnCommand<bool>
 {
     protected override void BeginProcessing()
     {
