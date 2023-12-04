@@ -19,25 +19,40 @@ public class ImportDataFrameCommand : BaseImportExportCommand
     public int RowCount { get; set; } = -1;
 
     [Parameter]
-    public int GuessCount { get; set; } = 10;
+    public int[] GuessCount { get; set; }
 
     [Parameter]
     public SwitchParameter IndexColumn { get; set; }
 
     protected override void BeginProcessing()
     {
-        var df = DataFrame.LoadCsv(
-            GetUnresolvedProviderPathFromPSPath(Path),
-            separator: Separator,
-            header: !NoHeader,
-            columnNames: ColumnName,
-            dataTypes: ColumnType,
-            numRows: RowCount,
-            guessRows: GuessCount,
-            addIndexColumn: IndexColumn,
-            encoding: Encoding,
-            cultureInfo: Culture);
+        var guesses = GuessCount?.Length > 0 ? GuessCount : [10];
+        for (int iGuess = 0; iGuess < guesses.Length; ++iGuess)
+        {
+            try
+            {
+                var df = DataFrame.LoadCsv(
+                    GetUnresolvedProviderPathFromPSPath(Path),
+                    separator: Separator,
+                    header: !NoHeader,
+                    columnNames: ColumnName,
+                    dataTypes: ColumnType,
+                    numRows: RowCount,
+                    guessRows: guesses[iGuess],
+                    addIndexColumn: IndexColumn,
+                    encoding: Encoding,
+                    cultureInfo: Culture);
 
-        WriteObject(df);
+                WriteObject(df);
+                return;
+            }
+            catch (FormatException ex)
+            {
+                if (ColumnType is not null || iGuess == guesses.Length - 1)
+                    throw;
+
+                WriteWarning($"Retrying after failed guess count {guesses[iGuess]}: {ex.Message}");
+            }
+        }
     }
 }

@@ -65,7 +65,8 @@ Specifies the column types.
 Tells how many rows to read.
 '@
 		GuessCount = @'
-Tells how many rows to use for guessing types.
+Tells how many rows to use for guessing types. Defaults to 10.
+Specify more than one value to retry on type parsing errors.
 '@
 		IndexColumn = @'
 Tells to add the row index column.

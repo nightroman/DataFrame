@@ -14,3 +14,22 @@ task help {
 		}
 	}
 }
+
+task guess {
+	# fails with the default 10
+	try {
+		throw Import-DataFrame x-guess-count.csv
+	}
+	catch {
+		"$_"
+		assert ("$_" -like "*input string*was not in a correct format.")
+	}
+
+	# but works with 11
+	$df = Import-DataFrame x-guess-count.csv -GuessCount 11
+	equals $df.Columns[0].DataType ([string])
+
+	# writes warning with 10 and works with 11
+	$df = Import-DataFrame x-guess-count.csv -GuessCount 10, 11 -WarningVariable WarningVariable
+	assert ("$WarningVariable" -like "Retrying after failed guess count 10: *input string*was not in a correct format.")
+}
