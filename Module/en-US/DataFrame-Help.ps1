@@ -36,7 +36,7 @@ Specifies the culture info for formatting values.
 			... | Out-DataFrame $df
 
 			# export
-			Export-DataFrame data.tsv $df -Separator t
+			Export-DataFrame $df data.tsv -Separator t
 		}
 	}
 }
@@ -44,17 +44,25 @@ Specifies the culture info for formatting values.
 ### Export-DataFrame
 Merge-Helps $ImportExport @{
 	command = 'Export-DataFrame'
-	synopsis = 'Exports DataFrame to CSV file.'
+	synopsis = 'Exports DataFrame to CSV file or string.'
 	parameters = @{
 		DataFrame = 'The DataFrame to export.'
+		String = 'Tells to output the CSV string.'
+	}
+	outputs = @{
+		type = 'System.String'
+		description = 'When the switch String is specified.'
 	}
 }
 
 ### Import-DataFrame
 Merge-Helps $ImportExport @{
 	command = 'Import-DataFrame'
-	synopsis = 'Imports DataFrame from CSV file.'
+	synopsis = 'Imports DataFrame from CSV file or string.'
 	parameters = @{
+		String = @'
+Specifies the source CSV string.
+'@
 		ColumnName = @'
 Specifies the column names.
 '@

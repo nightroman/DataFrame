@@ -1,8 +1,6 @@
 ﻿
 Set-StrictMode -Version 3
-Import-Module DataFrame
-
-filter Out-Table {$_.ToTable() | Out-Host}
+Import-Module ./Zoo.psm1
 
 task process -If (!(Test-Path z.process.csv)) {
 	$df = New-DataFrame @(
@@ -21,7 +19,7 @@ task process -If (!(Test-Path z.process.csv)) {
 		)
 	}
 
-	Export-DataFrame z.process.csv $df
+	Export-DataFrame $df z.process.csv
 }
 
 task top_used -If (!(Test-Path z.top_10_used.csv)) process, {

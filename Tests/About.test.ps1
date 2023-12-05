@@ -1,6 +1,6 @@
 ﻿
 Set-StrictMode -Version 3
-Import-Module DataFrame
+Import-Module ./Zoo.psm1
 
 task clean {
 	remove z.*
@@ -13,26 +13,4 @@ task help {
 			Write-Warning "Missing help description: $($_.Name)"
 		}
 	}
-}
-
-task guess {
-	# fails with the default guess count 10
-	try {
-		throw Import-DataFrame x-guess-count.csv
-	}
-	catch {
-		assert ("$_" -like "*input string*was not in a correct format.")
-	}
-
-	# but works with 11
-	$df = Import-DataFrame x-guess-count.csv -GuessCount 11
-	equals $df.Columns[0].DataType ([string])
-
-	# also works with column types
-	$df = Import-DataFrame x-guess-count.csv -ColumnType string, string
-	equals $df.Columns[0].DataType ([string])
-
-	# writes warning with 10 and works with 11
-	$df = Import-DataFrame x-guess-count.csv -GuessCount 10, 11 -WarningVariable WarningVariable
-	assert ("$WarningVariable" -like "Retrying after failed guess count 10: *input string*was not in a correct format.")
 }

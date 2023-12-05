@@ -1,5 +1,16 @@
 # DataFrame Release Notes
 
+## v0.1.0
+
+`Import-DataFrame`:
+
+- Swap positions of parameters `DataFrame` and `Path`
+- New parameter `String`
+
+`Export-DataFrame`:
+
+- New switch `String`
+
 ## v0.0.3
 
 `Import-DataFrame`: `GuessCount` accepts one or more more values for retries.

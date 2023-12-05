@@ -7,10 +7,10 @@ namespace PSDataFrame.Commands;
 
 public abstract class BaseImportExportCommand : PSCmdlet
 {
-    char _separator = ',';
+    protected const string PsnPath = "Path";
+    protected const string PsnString = "String";
 
-    [Parameter(Position = 0, Mandatory = true)]
-    public string Path { get; set; }
+    char _separator = ',';
 
     [Parameter]
     public char Separator
@@ -31,7 +31,7 @@ public abstract class BaseImportExportCommand : PSCmdlet
     [Parameter]
     public SwitchParameter NoHeader { get; set; }
 
-    [Parameter]
+    [Parameter(ParameterSetName = PsnPath)]
     public Encoding Encoding { get; set; }
 
     [Parameter]

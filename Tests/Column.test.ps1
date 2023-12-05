@@ -1,6 +1,6 @@
 ﻿
 Set-StrictMode -Version 3
-Import-Module DataFrame
+Import-Module ./Zoo.psm1
 
 task Boolean {
 	$r = $false, $true, 0.0, 3.14, $null | New-BooleanColumn

@@ -5,10 +5,16 @@ using System.Management.Automation;
 
 namespace PSDataFrame.Commands;
 
-[Cmdlet(VerbsData.Import, "DataFrame")]
+[Cmdlet(VerbsData.Import, "DataFrame", DefaultParameterSetName = PsnPath)]
 [OutputType(typeof(DataFrame))]
 public class ImportDataFrameCommand : BaseImportExportCommand
 {
+    [Parameter(ParameterSetName = PsnPath, Position = 0, Mandatory = true)]
+    public string Path { get; set; }
+
+    [Parameter(ParameterSetName = PsnString, Mandatory = true)]
+    public string String { get; set; }
+
     [Parameter]
     public string[] ColumnName { get; set; }
 
@@ -31,20 +37,42 @@ public class ImportDataFrameCommand : BaseImportExportCommand
         {
             try
             {
-                var df = DataFrame.LoadCsv(
-                    GetUnresolvedProviderPathFromPSPath(Path),
-                    separator: Separator,
-                    header: !NoHeader,
-                    columnNames: ColumnName,
-                    dataTypes: ColumnType,
-                    numRows: RowCount,
-                    guessRows: guesses[iGuess],
-                    addIndexColumn: IndexColumn,
-                    encoding: Encoding,
-                    cultureInfo: Culture);
+                if (ParameterSetName == PsnPath)
+                {
+                    var df = DataFrame.LoadCsv(
+                        GetUnresolvedProviderPathFromPSPath(Path),
+                        separator: Separator,
+                        header: !NoHeader,
+                        columnNames: ColumnName,
+                        dataTypes: ColumnType,
+                        numRows: RowCount,
+                        guessRows: guesses[iGuess],
+                        addIndexColumn: IndexColumn,
+                        encoding: Encoding,
+                        cultureInfo: Culture);
 
-                WriteObject(df);
-                return;
+                    WriteObject(df);
+                    return;
+                }
+
+                if (ParameterSetName == PsnString)
+                {
+                    var df = DataFrame.LoadCsvFromString(
+                        String,
+                        separator: Separator,
+                        header: !NoHeader,
+                        columnNames: ColumnName,
+                        dataTypes: ColumnType,
+                        numberOfRowsToRead: RowCount,
+                        guessRows: guesses[iGuess],
+                        addIndexColumn: IndexColumn,
+                        cultureInfo: Culture);
+
+                    WriteObject(df);
+                    return;
+                }
+
+                throw new NotImplementedException();
             }
             catch (FormatException ex)
             {
