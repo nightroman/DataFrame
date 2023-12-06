@@ -1,5 +1,9 @@
 # DataFrame Release Notes
 
+## v0.1.1
+
+`Import-DataFrame`: New switch `RenameColumn`
+
 ## v0.1.0
 
 `Import-DataFrame`:

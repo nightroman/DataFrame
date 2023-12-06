@@ -79,6 +79,9 @@ Specify more than one value to retry on type parsing errors.
 		IndexColumn = @'
 Tells to add the row index column.
 '@
+		RenameColumn = @'
+Tells to rename duplicated columns.
+'@
 	}
 	outputs = @{type = 'Microsoft.Data.Analysis.DataFrame'}
 }

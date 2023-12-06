@@ -30,6 +30,9 @@ public class ImportDataFrameCommand : BaseImportExportCommand
     [Parameter]
     public SwitchParameter IndexColumn { get; set; }
 
+    [Parameter]
+    public SwitchParameter RenameColumn { get; set; }
+
     protected override void BeginProcessing()
     {
         var guesses = GuessCount?.Length > 0 ? GuessCount : [10];
@@ -48,6 +51,7 @@ public class ImportDataFrameCommand : BaseImportExportCommand
                         numRows: RowCount,
                         guessRows: guesses[iGuess],
                         addIndexColumn: IndexColumn,
+                        renameDuplicatedColumns: RenameColumn,
                         encoding: Encoding,
                         cultureInfo: Culture);
 
@@ -66,6 +70,7 @@ public class ImportDataFrameCommand : BaseImportExportCommand
                         numberOfRowsToRead: RowCount,
                         guessRows: guesses[iGuess],
                         addIndexColumn: IndexColumn,
+                        renameDuplicatedColumns: RenameColumn,
                         cultureInfo: Culture);
 
                     WriteObject(df);

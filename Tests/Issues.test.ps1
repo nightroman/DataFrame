@@ -96,3 +96,23 @@ task lost_string_null {
 	$df = Import-DataFrame -String $csv
 	equals $df[0, 0] ''
 }
+
+task duplicated_columns {
+	$csv = @'
+id,id,id
+1,2,3
+'@
+
+	# fails by default
+	try {
+		throw Import-DataFrame -String $csv
+	}
+	catch {
+		assert ("$_" -like "DataFrame already contains a column called id*")
+	}
+
+	# works with -RenameColumn
+	$df = Import-DataFrame -String $csv -RenameColumn
+	equals $df.Columns[1].Name id.1
+	equals $df.Columns[2].Name id.2
+}
