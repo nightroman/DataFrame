@@ -82,3 +82,31 @@ task set_length_and_use_name {
 
 	$df | Out-Table
 }
+
+task read_bad {
+	try {
+		throw Read-DataFrame 42
+	}
+	catch {
+		equals "$_" 'The source must be DataTable, DbDataReader, DbDataAdapter.'
+	}
+}
+
+task read_data process, {
+	$df = Import-DataFrame z.process.csv
+	$str = $df.ToString()
+	$nRows = $df.Rows.Count
+	$nColumns = $df.Columns.Count
+
+	$dt = $df.ToTable()
+
+	$df = Read-DataFrame $dt
+	equals $str ($df.ToString())
+	equals $nRows $df.Rows.Count
+	equals $nColumns $df.Columns.Count
+
+	$df = Read-DataFrame ([System.Data.DataTableReader]::new($dt))
+	equals $str ($df.ToString())
+	equals $nRows $df.Rows.Count
+	equals $nColumns $df.Columns.Count
+}

@@ -86,6 +86,20 @@ Tells to rename duplicated columns.
 	outputs = @{type = 'Microsoft.Data.Analysis.DataFrame'}
 }
 
+### Read-DataFrame
+@{
+	command = 'Read-DataFrame'
+	synopsis = 'Reads DataFrame from the specified source.'
+	description = @'
+This command returns a DataFrame populated from the specified source.
+The data reader or adapter source is disposed by this operation.
+'@
+	parameters = @{
+		Source = 'The source data table, reader or adapter.'
+	}
+	outputs = @{type = 'Microsoft.Data.Analysis.DataFrame'}
+}
+
 ### New-DataFrame
 @{
 	command = 'New-DataFrame'

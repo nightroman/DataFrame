@@ -1,5 +1,9 @@
 # DataFrame Release Notes
 
+## v0.2.0
+
+New cmdlet `Read-DataFrame`
+
 ## v0.1.1
 
 `Import-DataFrame`: New switch `RenameColumn`

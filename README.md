@@ -30,6 +30,7 @@ Import and export `DataFrame` data:
 
 - `Import-DataFrame`
 - `Export-DataFrame`
+- `Read-DataFrame`
 
 Create and populate `DataFrame`:
 

@@ -56,6 +56,7 @@ task meta -Inputs (
 		'New-SingleColumn'
 		'New-StringColumn'
 		'Out-DataFrame'
+		'Read-DataFrame'
 	)
 
 	PrivateData = @{
