@@ -6,11 +6,15 @@ task clean {
 	remove z.*
 }
 
-task help {
-	foreach($_ in Get-Command -Module DataFrame) {
-		$r = Get-Help $_
-		if (!"$($r.Description)") {
-			Write-Warning "Missing help description: $($_.Name)"
+task help_synopsis {
+	Get-Command -Module DataFrame | Get-Help | .{process{
+		if (!$_.Synopsis.EndsWith('.')) {
+			Write-Warning "$($_.Name) : unexpected/missing synopsis"
 		}
-	}
+	}}
+}
+
+task help_exaples {
+	. Helps.ps1
+	Test-Helps ..\Module\en-US\DataFrame-Help.ps1
 }

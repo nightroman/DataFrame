@@ -239,76 +239,76 @@ Column values from the pipeline.
 ### New-BooleanColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-BooleanColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.BooleanDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.BooleanDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.BooleanDataFrameColumn'}
 }
 
 ### New-ByteColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-ByteColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.ByteDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.ByteDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.ByteDataFrameColumn'}
 }
 
 ### New-CharColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-CharColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.CharDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.CharDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.CharDataFrameColumn'}
 }
 
 ### New-DateTimeColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-DateTimeColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.DateTimeDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.DateTimeDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.DateTimeDataFrameColumn'}
 }
 
 ### New-DecimalColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-DecimalColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.DecimalDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.DecimalDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.DecimalDataFrameColumn'}
 }
 
 ### New-DoubleColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-DoubleColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.DoubleDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.DoubleDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.DoubleDataFrameColumn'}
 }
 
 ### New-Int16Column
 Merge-Helps $NewAnyColumn @{
 	command = 'New-Int16Column'
-	synopsis = 'Creates Microsoft.Data.Analysis.Int16DataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.Int16DataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.Int16DataFrameColumn'}
 }
 
 ### New-Int32Column
 Merge-Helps $NewAnyColumn @{
 	command = 'New-Int32Column'
-	synopsis = 'Creates Microsoft.Data.Analysis.Int32DataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.Int32DataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.Int32DataFrameColumn'}
 }
 
 ### New-Int64Column
 Merge-Helps $NewAnyColumn @{
 	command = 'New-Int64Column'
-	synopsis = 'Creates Microsoft.Data.Analysis.Int64DataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.Int64DataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.Int64DataFrameColumn'}
 }
 
 ### New-SingleColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-SingleColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.SingleDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.SingleDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.SingleDataFrameColumn'}
 }
 
 ### New-StringColumn
 Merge-Helps $NewAnyColumn @{
 	command = 'New-StringColumn'
-	synopsis = 'Creates Microsoft.Data.Analysis.StringDataFrameColumn'
+	synopsis = 'Creates Microsoft.Data.Analysis.StringDataFrameColumn.'
 	outputs = @{type = 'Microsoft.Data.Analysis.StringDataFrameColumn'}
 }
