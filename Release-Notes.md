@@ -1,5 +1,9 @@
 # DataFrame Release Notes
 
+## v0.2.1
+
+Amend PS Desktop workaround
+
 ## v0.2.0
 
 New cmdlet `Read-DataFrame`

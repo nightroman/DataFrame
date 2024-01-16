@@ -13,11 +13,7 @@ $AssemblyName = 'PSDataFrame'
 $ModuleRoot = "$env:ProgramFiles\WindowsPowerShell\Modules\$ModuleName"
 
 # Synopsis: Generate meta files.
-task meta -Inputs (
-	'.build.ps1', 'Release-Notes.md'
-) -Outputs (
-	"Module\$ModuleName.psd1", 'Src\Directory.Build.props'
-) -Jobs version, {
+task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1", Src\Directory.Build.props -Jobs version, {
 	$Project = 'https://github.com/nightroman/DataFrame'
 	$Summary = 'Cmdlets for Microsoft.Data.Analysis.DataFrame'
 	$Copyright = 'Copyright (c) Roman Kuzmin'
@@ -78,75 +74,40 @@ task meta -Inputs (
 		<Description>$Summary</Description>
 		<Product>$ModuleName</Product>
 		<Version>$Version</Version>
-		<FileVersion>$Version</FileVersion>
-		<AssemblyVersion>$Version</AssemblyVersion>
+		<IncludeSourceRevisionInInformationalVersion>False</IncludeSourceRevisionInInformationalVersion>
 	</PropertyGroup>
 </Project>
 "@
 }
 
-# Synopsis: Clean the workspace.
+# Synopsis: Remove temp files.
 task clean {
-	remove *.nupkg, z, Src\bin, Src\obj, README.htm
+	remove z, Src\bin, Src\obj, README.htm
 }
 
-# Synopsis: Build the project (and post-build Publish).
+# Synopsis: Build, publish in post-build, make help.
 task build meta, {
-	exec { dotnet build Src\$AssemblyName.csproj -c $Configuration }
-}
+	exec { dotnet build "Src\$AssemblyName.csproj" -c $Configuration }
+},
+?help
 
 # Synopsis: Publish the module (post-build).
 task publish {
-	exec { dotnet publish Src\$AssemblyName.csproj -c $Configuration -o $ModuleRoot --no-build }
+	exec { dotnet publish "Src\$AssemblyName.csproj" -c $Configuration -o $ModuleRoot --no-build }
+	remove "$ModuleRoot\System.Management.Automation.dll", "$ModuleRoot\*.deps.json"
+
 	exec { robocopy Module $ModuleRoot /s /np /r:0 /xf *-Help.ps1 } (0..3)
-	remove $ModuleRoot\System.Management.Automation.dll
 }
 
-# Synopsis: Build help by Helps, https://github.com/nightroman/Helps
-task help -Inputs {
-	Get-Item Src\Commands\*, Module\en-US\DataFrame-Help.ps1
-} -Outputs {
-	"$ModuleRoot\en-US\DataFrame-Help.xml"
-} -Jobs {
+# Synopsis: Build help by https://github.com/nightroman/Helps
+task help -Inputs { Get-Item Src\Commands\*, "Module\en-US\$ModuleName-Help.ps1" } -Outputs "$ModuleRoot\en-US\DataFrame-Help.xml" -Jobs {
 	. Helps.ps1
-	Convert-Helps Module\en-US\DataFrame-Help.ps1 $Outputs
+	Convert-Helps "Module\en-US\$ModuleName-Help.ps1" $Outputs
 }
 
-# Synopsis: Make an test help.
-task testHelp help, {
-	. Helps.ps1
-	Test-Helps Module\en-US\$ModuleName-Help.ps1
-}
-
-# Synopsis: Test this edition, then another.
-task test {
-	$ErrorView = 'NormalView'
-	Invoke-Build ** Tests
-
-	if ($env:TEST_THIS_EDITION) {
-		return
-	}
-
-	if ($PSEdition -eq 'Core') {
-		Invoke-Build test5
-	}
-	else {
-		Invoke-Build test7
-	}
-}
-
-# Synopsis: Test Desktop edition.
-task test5 {
-	Use-BuildEnv @{TEST_THIS_EDITION = 1} {
-		exec {powershell -NoProfile -Command Invoke-Build Test}
-	}
-}
-
-# Synopsis: Test Core edition.
-task test7 {
-	Use-BuildEnv @{TEST_THIS_EDITION = 1} {
-		exec {pwsh -NoProfile -Command Invoke-Build Test}
-	}
+# Synopsis: Set $script:Version.
+task version {
+	($script:Version = switch -Regex -File Release-Notes.md {'##\s+v(\d+\.\d+\.\d+)' {$Matches[1]; break} })
 }
 
 # Synopsis: Convert markdown to HTML.
@@ -163,37 +124,64 @@ task markdown {
 	)}
 }
 
-# Synopsis: Set $script:Version.
-task version {
-	($script:Version = switch -Regex -File Release-Notes.md {'##\s+v(\d+\.\d+\.\d+)' {$Matches[1]; break} })
-}
+# Synopsis: Make the package.
+task package help, markdown, version, {
+	assert ((Get-Module $ModuleName -ListAvailable).Version -eq ([Version]$Version))
+	assert ((Get-Item $ModuleRoot\$AssemblyName.dll).VersionInfo.FileVersion -eq ([Version]"$Version.0"))
 
-# Synopsis: Make the package in z\tools.
-task package build, help, testHelp, test, markdown, {
 	remove z
-	$null = mkdir z\tools\$ModuleName
+	exec { robocopy $ModuleRoot z\$ModuleName /s /xf *.pdb } (0..3)
 
-	Copy-Item -Recurse -Destination z\tools\$ModuleName $(
-		'LICENSE'
-		'README.htm'
-		"$ModuleRoot\*"
-	)
+	Copy-Item LICENSE -Destination z\$ModuleName
+	Move-Item README.htm -Destination z\$ModuleName
+
+	$actual = (Get-ChildItem z\$ModuleName -File -Force -Recurse -Name) -join "`n"
+	$expected = @'
+Apache.Arrow.dll
+DataFrame.psd1
+LICENSE
+Microsoft.Data.Analysis.dll
+Microsoft.ML.DataView.dll
+PSDataFrame.dll
+README.htm
+System.Buffers.dll
+System.Collections.Immutable.dll
+System.Memory.dll
+System.Numerics.Vectors.dll
+System.Runtime.CompilerServices.Unsafe.dll
+System.Threading.Tasks.Extensions.dll
+en-US\about_DataFrame.help.txt
+en-US\DataFrame-Help.xml
+'@
+
+	equals $actual ($expected -split '\r?\n' -join "`n")
 }
 
 # Synopsis: Make and push the PSGallery package.
-task pushPSGallery package, version, {
-	# test assembly version
-	assert ((Get-Item $ModuleRoot\$AssemblyName.dll).VersionInfo.FileVersion -eq ([Version]$Version))
-
-	# test manifest version
-	$data = & ([scriptblock]::Create([IO.File]::ReadAllText("$ModuleRoot\$ModuleName.psd1")))
-	assert ($data.ModuleVersion -eq $Version)
-
-	# publish
+task pushPSGallery package, {
 	$NuGetApiKey = Read-Host NuGetApiKey
-	Publish-Module -Path z/tools/$ModuleName -NuGetApiKey $NuGetApiKey
+	Publish-Module -Path z\$ModuleName -NuGetApiKey $NuGetApiKey
 },
 clean
 
-# Synopsis: Make and test.
-task . build, help, clean
+task test_core {
+	exec { pwsh -NoProfile -Command Invoke-Build test }
+}
+
+task test_desktop {
+	exec { powershell -NoProfile -Command Invoke-Build test }
+}
+
+# Synopsis: Test PowerShell editions.
+task tests test_core, test_desktop
+
+# Synopsis: Test current PowerShell.
+task test {
+	Invoke-Build ** Tests
+}
+
+# Synopsis: Build, test, clean.
+task all build, tests, clean
+
+# Synopsis: Build and clean.
+task . build, clean

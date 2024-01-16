@@ -1,5 +1,6 @@
 
 using System;
+using System.IO;
 using System.Management.Automation;
 using System.Reflection;
 
@@ -9,19 +10,22 @@ public class ModuleAssemblyInitializer : IModuleAssemblyInitializer
 {
     public void OnImport()
     {
+    }
+
+    static ModuleAssemblyInitializer()
+    {
         AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
     }
 
-    Assembly AssemblyResolve(object sender, ResolveEventArgs args)
+    // Workaround for Desktop
+    static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
     {
         if (args.Name.StartsWith("System.Runtime.CompilerServices.Unsafe"))
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies)
-            {
-                if (assembly.FullName.StartsWith("System.Runtime.CompilerServices.Unsafe"))
-                    return assembly;
-            }
+            var root = Path.GetDirectoryName(typeof(ModuleAssemblyInitializer).Assembly.Location);
+            var path = Path.Combine(root, "System.Runtime.CompilerServices.Unsafe.dll");
+            var assembly = Assembly.LoadFrom(path);
+            return assembly;
         }
         return null;
     }
