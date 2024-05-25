@@ -1,5 +1,13 @@
 # DataFrame Release Notes
 
+## v0.2.3
+
+Microsoft.Data.Analysis 0.22.0
+
+## v0.2.2
+
+Microsoft.Data.Analysis 0.21.1
+
 ## v0.2.1
 
 Amend PS Desktop workaround
