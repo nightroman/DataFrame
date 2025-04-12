@@ -10,8 +10,4 @@
     <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.22.2" />
   </ItemGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <PostBuildEvent>ib publish -Configuration $(Configuration)</PostBuildEvent>
-  </PropertyGroup>
 </Project>
