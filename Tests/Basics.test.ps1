@@ -20,7 +20,7 @@ task process -If (!(Test-Path z.process.csv)) {
 	}
 
 	Export-DataFrame $df z.process.csv
-	Export-DataFrame -DataFrame $df -Path "z.ps.parquet" -Parquet
+	Export-DataFrame $df z.ps.parquet -Parquet
 }
 
 task top_used -If (!(Test-Path z.top_10_used.csv)) process, {

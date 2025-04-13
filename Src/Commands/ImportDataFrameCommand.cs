@@ -97,12 +97,8 @@ public class ImportDataFrameCommand : BaseImportExportCommand
                     WriteObject(df);
                     return;
                 }
-                else
-                {
-                    var ex = new NotSupportedException($"Unsupported parameter set: {ParameterSetName}");
-                    var err = new ErrorRecord(ex, "InvalidParameterSet", ErrorCategory.InvalidArgument, ParameterSetName);
-                    ThrowTerminatingError(err);
-                }
+                
+                throw new NotImplementedException();
             }
             catch (FormatException ex)
             {
