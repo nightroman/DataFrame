@@ -54,17 +54,17 @@ public class ImportDataFrameCommand : BaseImportExportCommand
                 if (ParameterSetName == PsnPath)
                 {
                     var df = DataFrame.LoadCsv(
-                    GetUnresolvedProviderPathFromPSPath(Path),
-                    separator: Separator,
-                    header: !NoHeader,
-                    columnNames: ColumnName,
-                    dataTypes: ColumnType,
-                    numRows: RowCount,
-                    guessRows: guesses[iGuess],
-                    addIndexColumn: IndexColumn,
-                    renameDuplicatedColumns: RenameColumn,
-                    encoding: Encoding,
-                    cultureInfo: Culture);
+                        GetUnresolvedProviderPathFromPSPath(Path),
+                        separator: Separator,
+                        header: !NoHeader,
+                        columnNames: ColumnName,
+                        dataTypes: ColumnType,
+                        numRows: RowCount,
+                        guessRows: guesses[iGuess],
+                        addIndexColumn: IndexColumn,
+                        renameDuplicatedColumns: RenameColumn,
+                        encoding: Encoding,
+                        cultureInfo: Culture);
 
                     WriteObject(df);
 
