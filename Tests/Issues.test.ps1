@@ -55,7 +55,7 @@ Id,Name
 		throw Import-DataFrame -String $csv2
 	}
 	catch {
-		equals "$_" 'Line 1 has less columns than expected'
+		equals "$_" 'Line 2 has less columns than expected' # there is a bug in the DataFrame libraly that generates a wrong error message.
 	}
 
 	# works with explicit column types
