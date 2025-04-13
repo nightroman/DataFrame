@@ -8,14 +8,17 @@ param(
 )
 
 #requires -Version 7.4
-Set-StrictMode -Version 3
 
-$ModuleName = 'DataFrame'
-$AssemblyName = 'PSDataFrame'
-$ModuleRoot = $PSVersionTable.Platform -eq 'Unix' ? "$HOME/.local/share/powershell/Modules" : "$env:ProgramFiles\PowerShell\Modules\$ModuleName"
+Enter-Build {
+	Set-StrictMode -Version 3
+	$ModuleName = 'DataFrame'
+	$AssemblyName = 'PSDataFrame'
+	$Version = switch -Regex -File Release-Notes.md {'##\s+v(\d+\.\d+\.\d+)' {$Matches[1]; break} }
+	$ModuleRoot = $PSVersionTable.Platform -eq 'Unix' ? "$HOME/.local/share/powershell/Modules/$ModuleName/$Version" : "$env:ProgramFiles\PowerShell\Modules\$ModuleName\$Version"
+}
 
 # Synopsis: Generate meta files.
-task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1", Src\Directory.Build.props -Jobs version, {
+task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1", Src\Directory.Build.props -Jobs {
 	$Project = 'https://github.com/nightroman/DataFrame'
 	$Summary = 'Cmdlets for Microsoft.Data.Analysis.DataFrame'
 	$Copyright = 'Copyright (c) Roman Kuzmin'
@@ -100,14 +103,9 @@ task publish {
 }
 
 # Synopsis: Build help by https://github.com/nightroman/Helps
-task help -After ?build -Inputs { Get-Item Src\Commands\*, "Module\en-US\$ModuleName-Help.ps1" } -Outputs "$ModuleRoot\en-US\DataFrame-Help.xml" -Jobs {
+task help -After ?build -Inputs { Get-Item Src\Commands\*, "Module\en-US\$ModuleName-Help.ps1" } -Outputs {"$ModuleRoot\en-US\DataFrame-Help.xml"} -Jobs {
 	. Helps.ps1
 	Convert-Helps "Module\en-US\$ModuleName-Help.ps1" $Outputs
-}
-
-# Synopsis: Set $script:Version.
-task version {
-	($script:Version = switch -Regex -File Release-Notes.md {'##\s+v(\d+\.\d+\.\d+)' {$Matches[1]; break} })
 }
 
 # Synopsis: Convert markdown to HTML.
@@ -125,7 +123,7 @@ task markdown {
 }
 
 # Synopsis: Make the package.
-task package help, markdown, version, {
+task package help, markdown, {
 	equals (Get-Module $ModuleName -ListAvailable).Version ([Version]$Version)
 
 	remove z
