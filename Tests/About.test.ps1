@@ -14,7 +14,7 @@ task help_synopsis {
 	}}
 }
 
-task help_exaples {
-	. Helps.ps1
-	Test-Helps ..\Module\en-US\DataFrame-Help.ps1
-}
+# task help_exaples {
+# 	. Helps.ps1
+# 	Test-Helps ..\Module\en-US\DataFrame-Help.ps1
+# }
