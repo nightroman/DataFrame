@@ -3,6 +3,7 @@ using Microsoft.Data.Analysis;
 using System;
 using System.IO;
 using System.Management.Automation;
+using Parquet;
 
 namespace PSDataFrame.Commands;
 
@@ -14,10 +15,14 @@ public class ExportDataFrameCommand : BaseImportExportCommand
     public DataFrame DataFrame { get; set; }
 
     [Parameter(ParameterSetName = PsnPath, Position = 1, Mandatory = true)]
+    [Parameter(ParameterSetName = PsnParquet, Position = 1, Mandatory = true)]
     public string Path { get; set; }
 
     [Parameter(ParameterSetName = PsnString, Mandatory = true)]
     public SwitchParameter String { get; set; }
+
+    [Parameter(ParameterSetName = PsnParquet, Mandatory = true)]
+    public SwitchParameter Parquet { get; set; }
 
     protected override void BeginProcessing()
     {
@@ -51,6 +56,15 @@ public class ExportDataFrameCommand : BaseImportExportCommand
             var text = reader.ReadToEnd();
 
             WriteObject(text);
+            return;
+        }
+
+        if (ParameterSetName == PsnParquet)
+        {
+            using FileStream parquetStream = new FileStream(GetUnresolvedProviderPathFromPSPath(Path), FileMode.Create, FileAccess.Write, FileShare.None);
+
+            //they only have async extension method
+            DataFrame.WriteAsync(parquetStream).Wait();
             return;
         }
 

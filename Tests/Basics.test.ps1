@@ -20,6 +20,7 @@ task process -If (!(Test-Path z.process.csv)) {
 	}
 
 	Export-DataFrame $df z.process.csv
+	Export-DataFrame $df z.ps.parquet -Parquet
 }
 
 task top_used -If (!(Test-Path z.top_10_used.csv)) process, {
@@ -30,6 +31,12 @@ task top_used -If (!(Test-Path z.top_10_used.csv)) process, {
 task top_means process, {
 	$df = Import-DataFrame z.process.csv
 	$df.GroupBy('Name').Mean("WS", "Handles").OrderBy("WS").Tail(10) | Out-Table
+}
+
+task top_means_parquet process, {
+	$df = Import-DataFrame -ParquetPath 'z.ps.parquet'
+	$df = $df["Name"].ValueCounts()
+	$df.Filter($df["Counts"].ElementwiseGreaterThan(2)).OrderBy("Counts") | Out-Table
 }
 
 task used_more_than process, {
