@@ -9,7 +9,7 @@ public abstract class BaseImportExportCommand : PSCmdlet
 {
     protected const string PsnPath = "Path";
     protected const string PsnString = "String";
-
+    protected const string PsnParquet = "Parquet";
     char _separator = ',';
 
     [Parameter]
