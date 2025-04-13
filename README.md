@@ -2,14 +2,14 @@
 
 PowerShell cmdlets for [Microsoft.Data.Analysis.DataFrame](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe)
 
-This module is designed for PowerShell Core and Windows PowerShell 5.1
+This module requires PowerShell 7.4+
 
 ## Install
 
 The module is available at [PSGallery](https://www.powershellgallery.com/packages/DataFrame) and may be installed as:
 
 ```powershell
-Install-Module DataFrame
+Install-Module -Name DataFrame
 ```
 
 ## Explore
@@ -17,7 +17,7 @@ Install-Module DataFrame
 Explore the available commands and help:
 
 ```powershell
-Import-Module DataFrame
+Import-Module -Name DataFrame
 Get-Command -Module DataFrame
 
 help about_DataFrame

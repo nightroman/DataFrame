@@ -7,10 +7,12 @@ param(
 	$Configuration = 'Release'
 )
 
+#requires -Version 7.4
 Set-StrictMode -Version 3
+
 $ModuleName = 'DataFrame'
 $AssemblyName = 'PSDataFrame'
-$ModuleRoot = "$env:ProgramFiles\WindowsPowerShell\Modules\$ModuleName"
+$ModuleRoot = $PSVersionTable.Platform -eq 'Unix' ? "$HOME/.local/share/powershell/Modules" : "$env:ProgramFiles\PowerShell\Modules\$ModuleName"
 
 # Synopsis: Generate meta files.
 task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1", Src\Directory.Build.props -Jobs version, {
@@ -29,7 +31,7 @@ task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1
 	RootModule = '$AssemblyName.dll'
 	RequiredAssemblies = 'Microsoft.Data.Analysis.dll'
 
-	PowerShellVersion = '5.1'
+	PowerShellVersion = '7.4'
 	GUID = '8e619a4d-49bd-47d7-980e-842733c17482'
 
 	AliasesToExport = @()
@@ -57,7 +59,7 @@ task meta -Inputs $BuildFile, Release-Notes.md -Outputs "Module\$ModuleName.psd1
 
 	PrivateData = @{
 		PSData = @{
-			Tags = 'DataFrame', 'DataTable', 'CSV', 'TSV'
+			Tags = 'DataFrame', 'DataTable', 'CSV', 'TSV', 'Parquet'
 			ProjectUri = '$Project'
 			LicenseUri = '$Project/blob/main/LICENSE'
 			ReleaseNotes = '$Project/blob/master/Release-Notes.md'
@@ -88,19 +90,17 @@ task clean {
 # Synopsis: Build, publish in post-build, make help.
 task build meta, {
 	exec { dotnet build "Src\$AssemblyName.csproj" -c $Configuration }
-},
-?help
+}
 
 # Synopsis: Publish the module (post-build).
 task publish {
 	exec { dotnet publish "Src\$AssemblyName.csproj" -c $Configuration -o $ModuleRoot --no-build }
 	remove "$ModuleRoot\System.Management.Automation.dll", "$ModuleRoot\*.deps.json"
-
-	exec { robocopy Module $ModuleRoot /s /np /r:0 /xf *-Help.ps1 } (0..3)
+	Copy-Item Module\* $ModuleRoot -Exclude *.ps1 -Force -Recurse
 }
 
 # Synopsis: Build help by https://github.com/nightroman/Helps
-task help -Inputs { Get-Item Src\Commands\*, "Module\en-US\$ModuleName-Help.ps1" } -Outputs "$ModuleRoot\en-US\DataFrame-Help.xml" -Jobs {
+task help -After ?build -Inputs { Get-Item Src\Commands\*, "Module\en-US\$ModuleName-Help.ps1" } -Outputs "$ModuleRoot\en-US\DataFrame-Help.xml" -Jobs {
 	. Helps.ps1
 	Convert-Helps "Module\en-US\$ModuleName-Help.ps1" $Outputs
 }
@@ -126,35 +126,39 @@ task markdown {
 
 # Synopsis: Make the package.
 task package help, markdown, version, {
-	assert ((Get-Module $ModuleName -ListAvailable).Version -eq ([Version]$Version))
-	assert ((Get-Item $ModuleRoot\$AssemblyName.dll).VersionInfo.FileVersion -eq ([Version]"$Version.0"))
+	equals (Get-Module $ModuleName -ListAvailable).Version ([Version]$Version)
 
 	remove z
-	exec { robocopy $ModuleRoot z\$ModuleName /s /xf *.pdb } (0..3)
+	$toModule = mkdir "z\$ModuleName"
 
-	Copy-Item LICENSE -Destination z\$ModuleName
-	Move-Item README.htm -Destination z\$ModuleName
+	Copy-Item $ModuleRoot\* $toModule -Recurse -Exclude *.pdb
+	Copy-Item -Destination $toModule LICENSE
+	Move-Item -Destination z\$ModuleName README.htm
 
-	$actual = (Get-ChildItem z\$ModuleName -File -Force -Recurse -Name) -join "`n"
-	$expected = @'
+	$result = Get-ChildItem $toModule -Recurse -File -Name | Out-String
+	$sample = @'
 Apache.Arrow.dll
 DataFrame.psd1
+IronCompress.dll
 LICENSE
 Microsoft.Data.Analysis.dll
+Microsoft.IO.RecyclableMemoryStream.dll
 Microsoft.ML.DataView.dll
+Parquet.Data.Analysis.dll
+Parquet.dll
 PSDataFrame.dll
 README.htm
-System.Buffers.dll
-System.Collections.Immutable.dll
-System.Memory.dll
-System.Numerics.Vectors.dll
-System.Runtime.CompilerServices.Unsafe.dll
-System.Threading.Tasks.Extensions.dll
+Snappier.dll
+System.Numerics.Tensors.dll
+ZstdSharp.dll
 en-US\about_DataFrame.help.txt
 en-US\DataFrame-Help.xml
+runtimes\linux-arm64\native\libnironcompress.so
+runtimes\linux-x64\native\libnironcompress.so
+runtimes\osx-arm64\native\libnironcompress.dylib
+runtimes\win-x64\native\nironcompress.dll
 '@
-
-	equals $actual ($expected -split '\r?\n' -join "`n")
+	Assert-SameFile.ps1 -Text $sample $result $env:MERGE
 }
 
 # Synopsis: Make and push the PSGallery package.
@@ -164,24 +168,13 @@ task pushPSGallery package, {
 },
 clean
 
-task test_core {
-	exec { pwsh -NoProfile -Command Invoke-Build test }
-}
-
-task test_desktop {
-	exec { powershell -NoProfile -Command Invoke-Build test }
-}
-
-# Synopsis: Test PowerShell editions.
-task tests test_core, test_desktop
-
-# Synopsis: Test current PowerShell.
+# Synopsis: Run tests.
 task test {
 	Invoke-Build ** Tests
 }
 
 # Synopsis: Build, test, clean.
-task all build, tests, clean
+task all build, test, clean
 
 # Synopsis: Build and clean.
 task . build, clean

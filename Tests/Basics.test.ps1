@@ -2,7 +2,8 @@
 Set-StrictMode -Version 3
 Import-Module ./Zoo.psm1
 
-task process -If (!(Test-Path z.process.csv)) {
+# Ensure CSV and Parquet files by Export-DataFrame
+task process -If ($false -in (Test-Path z.process.csv, z.process.parquet)) {
 	$df = New-DataFrame @(
 		New-StringColumn Name
 		New-Int64Column WS
@@ -20,7 +21,7 @@ task process -If (!(Test-Path z.process.csv)) {
 	}
 
 	Export-DataFrame $df z.process.csv
-	Export-DataFrame $df z.ps.parquet -Parquet
+	Export-DataFrame $df -ParquetPath z.process.parquet
 }
 
 task top_used -If (!(Test-Path z.top_10_used.csv)) process, {
@@ -34,7 +35,7 @@ task top_means process, {
 }
 
 task top_means_parquet process, {
-	$df = Import-DataFrame -ParquetPath 'z.ps.parquet'
+	$df = Import-DataFrame -ParquetPath z.process.parquet
 	$df = $df["Name"].ValueCounts()
 	$df.Filter($df["Counts"].ElementwiseGreaterThan(2)).OrderBy("Counts") | Out-Table
 }

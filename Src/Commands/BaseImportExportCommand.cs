@@ -12,7 +12,8 @@ public abstract class BaseImportExportCommand : PSCmdlet
     protected const string PsnParquet = "Parquet";
     char _separator = ',';
 
-    [Parameter]
+    [Parameter(ParameterSetName = PsnPath)]
+    [Parameter(ParameterSetName = PsnString)]
     public char Separator
     {
         get => _separator;
@@ -28,12 +29,14 @@ public abstract class BaseImportExportCommand : PSCmdlet
         }
     }
 
-    [Parameter]
+    [Parameter(ParameterSetName = PsnPath)]
+    [Parameter(ParameterSetName = PsnString)]
     public SwitchParameter NoHeader { get; set; }
 
     [Parameter(ParameterSetName = PsnPath)]
     public Encoding Encoding { get; set; }
 
-    [Parameter]
+    [Parameter(ParameterSetName = PsnPath)]
+    [Parameter(ParameterSetName = PsnString)]
     public CultureInfo Culture { get; set; }
 }

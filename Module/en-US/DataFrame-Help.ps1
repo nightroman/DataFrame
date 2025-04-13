@@ -10,7 +10,10 @@ Set-StrictMode -Version 3
 $ImportExport = @{
 	parameters = @{
 		Path = @'
-Specifies the CSV file.
+Specifies the delimited file (CSV).
+'@
+		ParquetPath = @'
+Specifies the Parquet file.
 '@
 		Separator = @'
 The field separator char. The default is comma.
@@ -41,27 +44,27 @@ Specifies the culture info for formatting values.
 	}
 }
 
-### Export-DataFrame
+### Import-DataFrame
 Merge-Helps $ImportExport @{
 	command = 'Export-DataFrame'
-	synopsis = 'Exports DataFrame to CSV file or string.'
+	synopsis = 'Exports DataFrame.'
 	parameters = @{
 		DataFrame = 'The DataFrame to export.'
-		String = 'Tells to output the CSV string.'
+		String = 'Tells to output the delimited string (CSV).'
 	}
 	outputs = @{
 		type = 'System.String'
-		description = 'When the switch String is specified.'
+		description = 'When String is set.'
 	}
 }
 
 ### Import-DataFrame
 Merge-Helps $ImportExport @{
 	command = 'Import-DataFrame'
-	synopsis = 'Imports DataFrame from CSV file or string.'
+	synopsis = 'Imports DataFrame.'
 	parameters = @{
 		String = @'
-Specifies the source CSV string.
+Specifies the delimited string (CSV).
 '@
 		ColumnName = @'
 Specifies the column names.

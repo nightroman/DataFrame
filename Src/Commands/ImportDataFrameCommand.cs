@@ -1,9 +1,7 @@
 ﻿
 using Microsoft.Data.Analysis;
-using System;
-using System.IO;
-using System.Management.Automation;
 using Parquet;
+using System.Management.Automation;
 
 namespace PSDataFrame.Commands;
 
@@ -14,7 +12,7 @@ public class ImportDataFrameCommand : BaseImportExportCommand
     [Parameter(ParameterSetName = PsnPath, Position = 0, Mandatory = true)]
     public string Path { get; set; }
 
-    [Parameter(ParameterSetName = PsnParquet, Position = 0, Mandatory = true)]
+    [Parameter(ParameterSetName = PsnParquet, Mandatory = true)]
     public string ParquetPath { get; set; }
 
     [Parameter(ParameterSetName = PsnString, Mandatory = true)]
@@ -67,7 +65,6 @@ public class ImportDataFrameCommand : BaseImportExportCommand
                         cultureInfo: Culture);
 
                     WriteObject(df);
-
                     return;
                 }
 
@@ -91,13 +88,13 @@ public class ImportDataFrameCommand : BaseImportExportCommand
 
                 if (ParameterSetName == PsnParquet)
                 {
-                    using FileStream parquetStream = new FileStream(GetUnresolvedProviderPathFromPSPath(ParquetPath), FileMode.Open, FileAccess.Read, FileShare.None);
+                    using var parquetStream = new FileStream(GetUnresolvedProviderPathFromPSPath(ParquetPath), FileMode.Open, FileAccess.Read, FileShare.None);
                     var df = parquetStream.ReadParquetAsDataFrameAsync().GetAwaiter().GetResult();
 
                     WriteObject(df);
                     return;
                 }
-                
+
                 throw new NotImplementedException();
             }
             catch (FormatException ex)
